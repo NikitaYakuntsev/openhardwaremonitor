@@ -8,7 +8,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenHardwareMonitor", "Open
 		{B0397530-545A-471D-BB74-027AE456DF1A} = {B0397530-545A-471D-BB74-027AE456DF1A}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArduinoHardwareMonitor", "..\ArduinoHardwareMonitor\ArduinoHardwareMonitor.csproj", "{A0F2D607-F697-4A83-B8C2-3DDE2687D5C7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArduinoHardwareMonitor", "ArduinoHardwareMonitor.csproj", "{A0F2D607-F697-4A83-B8C2-3DDE2687D5C7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
