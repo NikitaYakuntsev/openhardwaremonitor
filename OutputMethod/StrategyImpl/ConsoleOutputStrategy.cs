@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace ArduinoHardwareMonitor.OutputMethod
 {
@@ -10,7 +11,8 @@ namespace ArduinoHardwareMonitor.OutputMethod
     {
         public void SendMessages(List<Util.IMessage> messages)
         {
-            messages.ForEach(m => Console.WriteLine(m.GetMessage()));
+            String jsonString = JsonConvert.SerializeObject(messages);
+            Console.WriteLine(jsonString);
             Console.WriteLine("_____________________");
         }
     }

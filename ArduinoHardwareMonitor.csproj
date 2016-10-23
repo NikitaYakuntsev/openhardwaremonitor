@@ -32,6 +32,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\..\DIPLOMA\ScadaModules\EntityService\bin\Debug\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -46,7 +49,7 @@
     <Compile Include="OutputMethod\StrategyImpl\ConsoleOutputStrategy.cs" />
     <Compile Include="OutputMethod\IOutputStrategy.cs" />
     <Compile Include="OutputMethod\StrategyImpl\SerialOutputStrategy.cs" />
-    <Compile Include="Program.cs" />
+    <Compile Include="ConsoleProgram.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Util\IMessage.cs" />
     <Compile Include="Util\MessageImpl\SensorValueMessage.cs" />

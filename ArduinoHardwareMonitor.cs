@@ -5,6 +5,7 @@ using OpenHardwareMonitor.Hardware;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,6 +19,8 @@ namespace ArduinoHardwareMonitor
         private static Identifier GPU_TEMP_IDENTIFIER = new Identifier(new string[]{"nvidiagpu","0","temperature","0"});
         private static Identifier GPU_FAN_IDENTIFIER = new Identifier(new string[]{"nvidiagpu","0","control","0"});
         private static Identifier MEMORY_USED_IDENTIFIER = new Identifier(new string[]{"ram","load","0"});
+
+        private static int MEASURE_DELAY = 500;
 
         private Computer _computer;
         private IHardware _cpu;
@@ -35,17 +38,27 @@ namespace ArduinoHardwareMonitor
             ISensor gpuFan = _gpu.Sensors.FirstOrDefault(s => GPU_FAN_IDENTIFIER.Equals(s.Identifier));
             ISensor gpuTemp = _gpu.Sensors.FirstOrDefault(s => GPU_TEMP_IDENTIFIER.Equals(s.Identifier));
 
+            ISensor cpuLoad = _cpu.Sensors.FirstOrDefault(s => CPU_LOAD_IDENTIFIER.Equals(s.Identifier));
+            ISensor cpuTemp = _cpu.Sensors.FirstOrDefault(s => CPU_TEMP_IDENTIFIER.Equals(s.Identifier));
+
             while (true)
             {
                 List<IMessage> sessionResult = new List<IMessage>();
 
                 this._gpu.Update();
-                sessionResult.Add(new SensorValueMessage("GPU Temp, C:\t{0}", gpuTemp.Value));
-                sessionResult.Add(new SensorValueMessage("GPU Fan, %:\t{0}", gpuFan.Value));
+                sessionResult.Add(new SensorValueMessage(gpuTemp));
+                sessionResult.Add(new SensorValueMessage(gpuFan));
 
+                this._cpu.Update();
+                sessionResult.Add(new SensorValueMessage(cpuLoad));
+                sessionResult.Add(new SensorValueMessage(cpuTemp));
+
+                _context.Strategy = new ConsoleOutputStrategy();
+                _context.ExecuteOutputStrategy(sessionResult);
+                _context.Strategy = new SerialOutputStrategy();
                 _context.ExecuteOutputStrategy(sessionResult);
 
-                Thread.Sleep(1000);
+                Thread.Sleep(MEASURE_DELAY); //TODO Replace with scheduler.
             }
         }
 
@@ -65,7 +78,7 @@ namespace ArduinoHardwareMonitor
             this._gpu = _computer.Hardware.First(h => HardwareType.GpuNvidia.Equals(h.HardwareType));
             this._memory = _computer.Hardware.First(h => HardwareType.RAM.Equals(h.HardwareType));
 
-            this._context = new OutputContext(new ConsoleOutputStrategy());
+            this._context = new OutputContext(new SerialOutputStrategy());
         }
     }
 }

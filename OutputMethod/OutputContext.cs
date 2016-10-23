@@ -16,6 +16,12 @@ namespace ArduinoHardwareMonitor.OutputMethod
             this._strategy = strategy;
         }
 
+        public IOutputStrategy Strategy
+        {
+            get { return _strategy; }
+            set { _strategy = value; }
+        }
+
         public void ExecuteOutputStrategy(List<IMessage> messages)
         {
             this._strategy.SendMessages(messages);

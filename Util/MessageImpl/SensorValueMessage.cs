@@ -3,23 +3,49 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using OpenHardwareMonitor.Hardware;
 
 namespace ArduinoHardwareMonitor.Util.MessageImpl
 {
     public class SensorValueMessage : IMessage
     {
-        private String _formatPattern;
-        private Object _value;
+        private string id;
+        private HardwareType hwType;
+        private Object value;
+        private SensorType type;
 
-        public SensorValueMessage(String pattern, Object value)
+        public SensorValueMessage(ISensor sensor)
         {
-            this._formatPattern = pattern;
-            this._value = value;
+            this.id = sensor.Identifier.ToString();
+            this.hwType = sensor.Hardware.HardwareType;
+            this.value = sensor.Value;
+            this.type = sensor.SensorType;
         }
 
         public string GetMessage()
         {
-            return String.Format(_formatPattern, _value);
+            return JsonConvert.SerializeObject(this);
+        }
+
+        public string Id
+        {
+            get { return id; }
+        }
+
+        public HardwareType HwType
+        {
+            get { return hwType; }
+        }
+
+        public object Value
+        {
+            get { return value; }
+        }
+
+        public SensorType Type
+        {
+            get { return type; }
         }
     }
 }
