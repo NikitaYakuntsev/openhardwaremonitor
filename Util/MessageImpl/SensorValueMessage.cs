@@ -14,13 +14,15 @@ namespace ArduinoHardwareMonitor.Util.MessageImpl
         private HardwareType hwType;
         private Object value;
         private SensorType type;
+        private Indicator prefIndicator;
 
-        public SensorValueMessage(ISensor sensor)
+        public SensorValueMessage(ISensor sensor, Indicator preferredIndicator)
         {
             this.id = sensor.Identifier.ToString();
             this.hwType = sensor.Hardware.HardwareType;
             this.value = sensor.Value;
             this.type = sensor.SensorType;
+            this.prefIndicator = preferredIndicator;
         }
 
         public string GetMessage()
@@ -38,6 +40,11 @@ namespace ArduinoHardwareMonitor.Util.MessageImpl
             get { return hwType; }
         }
 
+        public Indicator PrefIndicator
+        {
+            get { return prefIndicator; }
+        }
+
         public object Value
         {
             get { return value; }
@@ -48,4 +55,10 @@ namespace ArduinoHardwareMonitor.Util.MessageImpl
             get { return type; }
         }
     }
+
+    public enum Indicator
+    {
+        Indicator100 = 100,
+        Indicator300 = 300
+    };
 }

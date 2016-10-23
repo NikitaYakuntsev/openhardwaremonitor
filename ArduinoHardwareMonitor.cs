@@ -20,7 +20,7 @@ namespace ArduinoHardwareMonitor
         private static Identifier GPU_FAN_IDENTIFIER = new Identifier(new string[]{"nvidiagpu","0","control","0"});
         private static Identifier MEMORY_USED_IDENTIFIER = new Identifier(new string[]{"ram","load","0"});
 
-        private static int MEASURE_DELAY = 500;
+        private static int MEASURE_DELAY = 500; //Todo configuration selection.
 
         private Computer _computer;
         private IHardware _cpu;
@@ -41,17 +41,22 @@ namespace ArduinoHardwareMonitor
             ISensor cpuLoad = _cpu.Sensors.FirstOrDefault(s => CPU_LOAD_IDENTIFIER.Equals(s.Identifier));
             ISensor cpuTemp = _cpu.Sensors.FirstOrDefault(s => CPU_TEMP_IDENTIFIER.Equals(s.Identifier));
 
+            ISensor ramSensor = _memory.Sensors.FirstOrDefault(s => MEMORY_USED_IDENTIFIER.Equals(s.Identifier));
+
             while (true)
             {
                 List<IMessage> sessionResult = new List<IMessage>();
 
                 this._gpu.Update();
-                sessionResult.Add(new SensorValueMessage(gpuTemp));
-                sessionResult.Add(new SensorValueMessage(gpuFan));
+                sessionResult.Add(new SensorValueMessage(gpuTemp, Indicator.Indicator300));
+                sessionResult.Add(new SensorValueMessage(gpuFan, Indicator.Indicator100));
 
                 this._cpu.Update();
-                sessionResult.Add(new SensorValueMessage(cpuLoad));
-                sessionResult.Add(new SensorValueMessage(cpuTemp));
+                //sessionResult.Add(new SensorValueMessage(cpuTemp, Indicator.Indicator300));
+                sessionResult.Add(new SensorValueMessage(cpuLoad, Indicator.Indicator100));
+                
+                this._memory.Update();
+                sessionResult.Add(new SensorValueMessage(ramSensor, Indicator.Indicator300));
 
                 _context.Strategy = new ConsoleOutputStrategy();
                 _context.ExecuteOutputStrategy(sessionResult);

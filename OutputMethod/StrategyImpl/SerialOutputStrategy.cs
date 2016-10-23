@@ -14,13 +14,21 @@ namespace ArduinoHardwareMonitor.OutputMethod
 
         public SerialOutputStrategy()
         {
-            if (port == null)
+            try
             {
-                port = new SerialPort("COM4");
+                if (port == null)
+                {
+                    port = new SerialPort("COM4");
+                    //Todo configuration selection.
+                }
+                if (!port.IsOpen)
+                {
+                    port.Open();
+                }
             }
-            if (!port.IsOpen)
+            catch (Exception e)
             {
-                port.Open();
+                //TODO handling.
             }
         }
 
@@ -28,9 +36,16 @@ namespace ArduinoHardwareMonitor.OutputMethod
         {
 
             String jsonString = JsonConvert.SerializeObject(messages);
-            if (port.IsOpen)
+            try
             {
-                port.WriteLine(jsonString);
+                if (port.IsOpen)
+                {
+                    port.WriteLine(jsonString);
+                }
+            }
+            catch (Exception e)
+            {
+                //TODO handling.
             }
         }
     }
