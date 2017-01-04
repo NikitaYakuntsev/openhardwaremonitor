@@ -40,7 +40,7 @@ namespace ArduinoHardwareMonitor
         public void Start()
         {            
             ISensor gpuFan = _gpu.Sensors.FirstOrDefault(s => GPU_FAN_IDENTIFIER.Equals(s.Identifier));
-            ISensor gpuTemp = _gpu.Sensors.FirstOrDefault(s => GPU_LOAD_IDENTIFIER.Equals(s.Identifier));
+            ISensor gpuTemp = _gpu.Sensors.FirstOrDefault(s => GPU_TEMP_IDENTIFIER.Equals(s.Identifier));
             ISensor gpuLoad = _gpu.Sensors.FirstOrDefault(s => GPU_LOAD_IDENTIFIER.Equals(s.Identifier));
 
             ISensor cpuLoad = _cpu.Sensors.FirstOrDefault(s => CPU_LOAD_IDENTIFIER.Equals(s.Identifier));
