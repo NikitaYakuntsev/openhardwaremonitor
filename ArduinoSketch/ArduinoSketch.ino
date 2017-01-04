@@ -1,10 +1,11 @@
 #include <ArduinoJson.h>
 
 enum HwType { CPU = 2, RAM = 3, GPU = 4 };
-HwType currentHwType = GPU;
+HwType currentHwType = CPU;
+int currentShowState = 1; //increment this later on btn click.
 
-int percentPin = 5;
-int tempPin = 6;
+int ind100Pin = 5;
+int ind300Pin = 6;
 const int PERCENT_LIMIT = 100;
 const int TEMP_LIMIT = 100;
 const int PIN_LIMIT = 255;
@@ -14,8 +15,8 @@ void setup() {
   while (!Serial) {
     // wait serial port initialization
   }  
-  pinMode(percentPin, OUTPUT);
-  pinMode(tempPin, OUTPUT);
+  pinMode(ind100Pin, OUTPUT);
+  pinMode(ind300Pin, OUTPUT);
   
   Init();
 }
@@ -41,15 +42,18 @@ void serialEvent()
   for (int i = 0; i < root.size(); i++) {
     JsonObject& curr = root[i];
     int hwType = curr["HwType"];
+    int showState = curr["GroupId"];
     double value;
     int type;
-    if (hwType == currentHwType) {
+    int indicator;
+    if (showState == currentShowState) {
       value = curr["Value"];
       type = curr["Type"];
+      indicator = curr["PrefIndicator"];
       
-      bool temp = type == 2;
-      int writePin = temp ? tempPin : percentPin;
-      int writeValue = map(value, 0, temp ? TEMP_LIMIT : PERCENT_LIMIT, 0, PIN_LIMIT);
+      bool ind300 = indicator == 300;
+      int writePin = ind300 ? ind300Pin : ind100Pin;
+      int writeValue = map(value, 0, ind300 ? TEMP_LIMIT : PERCENT_LIMIT, 0, PIN_LIMIT);
       analogWrite(writePin, writeValue);
     }       
   }
@@ -58,17 +62,17 @@ void serialEvent()
 }
 
 void Init() {
-  digitalWrite(percentPin, HIGH);
-  digitalWrite(tempPin, HIGH);  
+  digitalWrite(ind100Pin, HIGH);
+  digitalWrite(ind300Pin, HIGH);  
   delay(500);
-  digitalWrite(percentPin, LOW);
-  digitalWrite(tempPin, LOW);
+  digitalWrite(ind100Pin, LOW);
+  digitalWrite(ind300Pin, LOW);
   delay(500);
-  digitalWrite(percentPin, HIGH);
-  digitalWrite(tempPin, HIGH);  
+  digitalWrite(ind100Pin, HIGH);
+  digitalWrite(ind300Pin, HIGH);  
   delay(500);
-  digitalWrite(percentPin, LOW);
-  digitalWrite(tempPin, LOW);
+  digitalWrite(ind100Pin, LOW);
+  digitalWrite(ind300Pin, LOW);
   delay(500);
 }
 

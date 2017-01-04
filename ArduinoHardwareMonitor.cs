@@ -2,13 +2,9 @@
 using ArduinoHardwareMonitor.Util;
 using ArduinoHardwareMonitor.Util.MessageImpl;
 using OpenHardwareMonitor.Hardware;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace ArduinoHardwareMonitor
 {
@@ -17,10 +13,18 @@ namespace ArduinoHardwareMonitor
         private static Identifier CPU_LOAD_IDENTIFIER = new Identifier(new string[]{"intelcpu","0", "load", "0"});
         private static Identifier CPU_TEMP_IDENTIFIER = new Identifier(new string[]{"intelcpu","0","temperature","4"});
         private static Identifier GPU_TEMP_IDENTIFIER = new Identifier(new string[]{"nvidiagpu","0","temperature","0"});
+        private static Identifier GPU_LOAD_IDENTIFIER = new Identifier(new string[]{"nvidiagpu","0","load","0"});
         private static Identifier GPU_FAN_IDENTIFIER = new Identifier(new string[]{"nvidiagpu","0","control","0"});
         private static Identifier MEMORY_USED_IDENTIFIER = new Identifier(new string[]{"ram","load","0"});
 
         private static int MEASURE_DELAY = 500; //Todo configuration selection.
+        //add groups:
+        //0: cpu + ram
+        //1: cpu + gpu
+        //2: gpu fan + temp
+        //configure each parameter with indicator type (where do u like to show on)
+        //button will just increment the values and (inc)%(nmaxgroups) = group to show
+        //you can configure such groups (sens1 + sens2) and indicator type in ui.
 
         private Computer _computer;
         private IHardware _cpu;
@@ -36,7 +40,8 @@ namespace ArduinoHardwareMonitor
         public void Start()
         {            
             ISensor gpuFan = _gpu.Sensors.FirstOrDefault(s => GPU_FAN_IDENTIFIER.Equals(s.Identifier));
-            ISensor gpuTemp = _gpu.Sensors.FirstOrDefault(s => GPU_TEMP_IDENTIFIER.Equals(s.Identifier));
+            ISensor gpuTemp = _gpu.Sensors.FirstOrDefault(s => GPU_LOAD_IDENTIFIER.Equals(s.Identifier));
+            ISensor gpuLoad = _gpu.Sensors.FirstOrDefault(s => GPU_LOAD_IDENTIFIER.Equals(s.Identifier));
 
             ISensor cpuLoad = _cpu.Sensors.FirstOrDefault(s => CPU_LOAD_IDENTIFIER.Equals(s.Identifier));
             ISensor cpuTemp = _cpu.Sensors.FirstOrDefault(s => CPU_TEMP_IDENTIFIER.Equals(s.Identifier));
@@ -48,16 +53,18 @@ namespace ArduinoHardwareMonitor
                 List<IMessage> sessionResult = new List<IMessage>();
 
                 this._gpu.Update();
-                sessionResult.Add(new SensorValueMessage(gpuTemp, Indicator.Indicator300));
-                sessionResult.Add(new SensorValueMessage(gpuFan, Indicator.Indicator100));
+                sessionResult.Add(new SensorValueMessage(gpuTemp, Indicator.Indicator300, (int) GROUP.GPU));
+                sessionResult.Add(new SensorValueMessage(gpuFan, Indicator.Indicator100, (int)GROUP.GPU));
+
+                this._memory.Update();
+                sessionResult.Add(new SensorValueMessage(ramSensor, Indicator.Indicator300, (int) GROUP.CPURAM));
 
                 this._cpu.Update();
-                //sessionResult.Add(new SensorValueMessage(cpuTemp, Indicator.Indicator300));
-                sessionResult.Add(new SensorValueMessage(cpuLoad, Indicator.Indicator100));
+                sessionResult.Add(new SensorValueMessage(cpuLoad, Indicator.Indicator100, (int) GROUP.CPURAM));
                 
-                this._memory.Update();
-                sessionResult.Add(new SensorValueMessage(ramSensor, Indicator.Indicator300));
-
+                sessionResult.Add(new SensorValueMessage(cpuLoad, Indicator.Indicator100, (int) GROUP.CPUGPU));
+                sessionResult.Add(new SensorValueMessage(gpuLoad, Indicator.Indicator300, (int) GROUP.CPUGPU));
+                
                 _context.Strategy = new ConsoleOutputStrategy();
                 _context.ExecuteOutputStrategy(sessionResult);
                 _context.Strategy = new SerialOutputStrategy();
@@ -84,6 +91,13 @@ namespace ArduinoHardwareMonitor
             this._memory = _computer.Hardware.First(h => HardwareType.RAM.Equals(h.HardwareType));
 
             this._context = new OutputContext(new SerialOutputStrategy());
+        }
+
+        private enum GROUP
+        {
+            CPURAM = 0,
+            CPUGPU = 1,
+            GPU = 2
         }
     }
 }

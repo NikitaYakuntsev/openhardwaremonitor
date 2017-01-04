@@ -11,18 +11,33 @@ namespace ArduinoHardwareMonitor.Util.MessageImpl
     public class SensorValueMessage : IMessage
     {
         private string id;
+        /// <summary>
+        /// deprecated
+        /// </summary>
         private HardwareType hwType;
+
+        private int groupId;
         private Object value;
         private SensorType type;
         private Indicator prefIndicator;
 
-        public SensorValueMessage(ISensor sensor, Indicator preferredIndicator)
+        public SensorValueMessage(ISensor sensor, Indicator preferredIndicator, int groupId)
         {
             this.id = sensor.Identifier.ToString();
             this.hwType = sensor.Hardware.HardwareType;
+            this.groupId = groupId;
             this.value = sensor.Value;
             this.type = sensor.SensorType;
             this.prefIndicator = preferredIndicator;
+        }
+
+        public SensorValueMessage Calibrate(int value = 100)
+        {
+            if (0 <= value && value <= 100)
+            {
+                this.value = value;
+            }
+            return this;
         }
 
         public string GetMessage()
@@ -53,6 +68,11 @@ namespace ArduinoHardwareMonitor.Util.MessageImpl
         public SensorType Type
         {
             get { return type; }
+        }
+
+        public int GroupId
+        {
+            get { return groupId; }
         }
     }
 
