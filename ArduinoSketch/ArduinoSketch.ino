@@ -11,6 +11,7 @@ int ind300Pin = 6;
 
 int ind300r = 11;
 int ind300g = 10;
+
 int R300;
 int G300;
 
@@ -75,6 +76,7 @@ void serialEvent()
     }       
   }
   Serial.println(); //to check when processing is done
+
   
    
 
@@ -94,6 +96,7 @@ void Init() {
   digitalWrite(ind300Pin, LOW);
   delay(500);
 }
+
 
 
 void HSV_to_RGB(double hue, double brightness)
@@ -131,6 +134,7 @@ void HSV_to_RGB(double hue, double brightness)
 //   Serial.print("R: "); Serial.println(R);
 //   Serial.print("G: "); Serial.println(G);
 //   Serial.print("B: "); Serial.println(B);
+
    R300 = R;
    G300 = G;
 }
