@@ -53,14 +53,14 @@ namespace ArduinoHardwareMonitor
                 List<IMessage> sessionResult = new List<IMessage>();
 
                 this._gpu.Update();
-                sessionResult.Add(new SensorValueMessage(gpuTemp, Indicator.Indicator300, (int) GROUP.GPU));
-                sessionResult.Add(new SensorValueMessage(gpuFan, Indicator.Indicator100, (int)GROUP.GPU));
+                //sessionResult.Add(new SensorValueMessage(gpuTemp, Indicator.Indicator300, (int) GROUP.GPU));
+                //sessionResult.Add(new SensorValueMessage(gpuFan, Indicator.Indicator100, (int)GROUP.GPU));
 
                 this._memory.Update();
-                sessionResult.Add(new SensorValueMessage(ramSensor, Indicator.Indicator300, (int) GROUP.CPURAM));
+                //sessionResult.Add(new SensorValueMessage(ramSensor, Indicator.Indicator300, (int) GROUP.CPURAM));
 
                 this._cpu.Update();
-                sessionResult.Add(new SensorValueMessage(cpuLoad, Indicator.Indicator100, (int) GROUP.CPURAM));
+                //sessionResult.Add(new SensorValueMessage(cpuLoad, Indicator.Indicator100, (int) GROUP.CPURAM));
                 
                 sessionResult.Add(new SensorValueMessage(cpuLoad, Indicator.Indicator100, (int) GROUP.CPUGPU));
                 sessionResult.Add(new SensorValueMessage(gpuLoad, Indicator.Indicator300, (int) GROUP.CPUGPU));
