@@ -4,7 +4,7 @@ enum HwType { CPU = 2, RAM = 3, GPU = 4 };
 HwType currentHwType = CPU;
 int currentShowState = 1; //increment this later on btn click.
 
-int whiteBacklight = 13;
+//int whiteBacklight = 13;
 
 int ind100Pin = 5;
 int ind300Pin = 6;
@@ -26,11 +26,11 @@ void setup() {
   }  
   pinMode(ind100Pin, OUTPUT);
   pinMode(ind300Pin, OUTPUT);
-  pinMode(whiteBacklight, OUTPUT);
+  //pinMode(whiteBacklight, OUTPUT);
   pinMode(ind300r, OUTPUT);
   pinMode(ind300g, OUTPUT); 
    
-  digitalWrite(whiteBacklight, HIGH);
+  //digitalWrite(whiteBacklight, HIGH);
   Init();
 }
 
@@ -71,7 +71,7 @@ void serialEvent()
       HSV_to_RGB(map(value, 0, 100, 85, 0), 200);
       if (ind300) { 
         analogWrite(ind300r, R300);
-        analogWrite(ind300g, R300);
+        analogWrite(ind300g, G300);
       }
     }       
   }
